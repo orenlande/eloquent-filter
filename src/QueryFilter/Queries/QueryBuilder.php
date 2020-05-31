@@ -48,7 +48,15 @@ class QueryBuilder
      */
     public function buildQuery($field, array $params)
     {
-        if (!empty($params[0]['start']) && !empty($params[0]['end'])) {
+        // if has : seperator means we referring joined table
+        if(strpos($field, ':') !== false){
+            $nested = explode(':', $field);
+        }
+
+        // means we found nested query, we need to self-call the function to build it
+        if(isset($nested)){
+            $this->queryFilterBuilder->withRelationship("{$nested[0]}", $nested[1], $params);
+        } else if (!empty($params[0]['start']) && !empty($params[0]['end'])) {
             $this->queryFilterBuilder->whereBetween($field, $params);
         } elseif ($field == 'f_params') {
             $this->__buildQueryWithNewParams($field, $params[0]);

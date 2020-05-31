@@ -56,7 +56,10 @@ class ModelFilters extends QueryFilter
             return true;
         } elseif ($this->checkModelHasOverrideMethod($field)) {
             return true;
+        } elseif (strpos($field, ':')) {
+            return true;
         }
+        
         $class_name = class_basename($this->builder->getModel());
 
         if ($field == 'page') {
